@@ -1,0 +1,3 @@
+[submodule "vendor/dsh-blackboard"]
+	path = vendor/dsh-blackboard
+	url = https://github.com/LYK-ce/dsh-blackboard.git
