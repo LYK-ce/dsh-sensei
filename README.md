@@ -27,20 +27,8 @@ dsh plugin --profile <profile> add <spec>
 | spec | 例 | 说明 |
 |---|---|---|
 | 本地路径 | `C:\src\dsh-sensei`、`/src/dsh-sensei`、`file:C:\src\dsh-sensei` | 开发时就地用。**GUI 里必须填绝对路径**——Host 的工作目录对浏览器里输入的人没有意义，相对路径会被拒；同一条 CLI 命令会把相对路径按调用方的当前目录锚成绝对路径 |
-| git | `github:<owner>/dsh-sensei` | 包体必须自带 `lib/client.js`，装的人不跑构建。**但 pnpm 不会拉 git submodule**，`vendor/dsh-blackboard` 会缺；见下 |
-| npm | `dsh-sensei` | **还没发**。发出去以后这是最省事的一条：产物与 vendor 源码都随包走，没有 submodule 问题 |
-
-### 从 git 安装：先初始化 submodule
-
-批注层来自 `vendor/dsh-blackboard`（submodule）。pnpm 打包远端仓库时**不会**递归拉 submodule，缺了它宿主加载会直接失败，所以 `github:` 直装不可用。走 git 时先手动 clone 并初始化：
-
-```sh
-git clone --recurse-submodules <仓库地址> dsh-sensei
-# 已经 clone 过、只是没拉子模块：
-git submodule update --init
-```
-
-然后把 clone 出来的目录用「本地路径」那条 spec 装进 profile。想让 `github:` 直装可用，只能把 vendor 源码内联进仓库（这会失去 submodule 的固定 commit 语义），本包没有这么做。
+| git | `github:LYK-ce/dsh-sensei` | 一般用户走这条：pnpm 直接打包远端仓库、不跑任何构建。批注层源码以普通文件内联在 `vendor/dsh-blackboard`，没有 submodule，装的人不用额外操作 |
+| npm | `dsh-sensei` | **还没发**。发出去以后是最省事的一条：产物与 vendor 源码都随包走 |
 
 ### 为什么包里没有构建步骤
 
@@ -190,7 +178,7 @@ pnpm install --frozen-lockfile         # peer 范围不应触发 lockfile 漂移
 - **固定舞台 1280×720、只做 16:9 fit**：没有缩放平移，超出舞台的内容靠 `sensei_read` 的 `overflow` 提示，不会自动排版。
 - **单次导出回传上限 64 MiB**：60 页 × scale 2 可能触顶；降低 `scale` 再导。
 - **工具在所有 preset 可见**：没有开关，也不需要开。
-- **git 直装不可用**：`github:` spec 不会拉 submodule，必须先 clone + `git submodule update --init` 再按本地路径安装；npm 发布后可绕开。
+- **批注层是 vendored 副本**：`vendor/dsh-blackboard` 是上游固定 commit 的普通文件副本，不随上游自动更新；升级要手工覆盖并同步 `VENDOR.md` 里的提交号。
 
 ## 目录
 
@@ -203,13 +191,13 @@ host/                   插件宿主半边：index / store / routes / tool / pre
 client/                 浏览器半边：index / panel / source / stage / annotator / rasterize / sanitize / locale
 build/build-client.mjs  esbuild → lib/client.js（模块表 lazy-CJS 协议）
 tests/                  node:test 单测
-vendor/dsh-blackboard/  submodule：批注层源码，只读
+vendor/dsh-blackboard/  批注层源码副本（上游 ec9052f），只读；见同目录 VENDOR.md
 lib/client.js           构建产物，已进版本库，必须与 client/ 源码一致
 ```
 
 ## 与 dsh-blackboard 的关系
 
-`vendor/dsh-blackboard` 是指向 <https://github.com/LYK-ce/dsh-blackboard> 的 **submodule**，pin 在固定 commit 上。它只作为**批注层源码来源**被相对路径 import，本仓库不修改它：
+`vendor/dsh-blackboard` 是 <https://github.com/LYK-ce/dsh-blackboard> 在固定 commit `ec9052f` 上的**源码副本**（普通文件，不是 submodule），许可见同目录 `LICENSE`，来源与覆盖方式见 `VENDOR.md`。它只作为**批注层源码来源**被相对路径 import，本仓库不修改它：
 
 - `core/render.ts` 把场景画到 2D 上下文（透明，不画背景）；
 - `core/commands.ts` / `core/elements.ts` / `core/scene.ts` / `shared/ops.ts` 提供命令词汇、元素与场景 reducer；

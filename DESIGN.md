@@ -28,9 +28,9 @@
 | 本仓库（只改这里） | `C:\workspace\Tool\deepseek-harness\Workspace\dsh-sensei` |
 | DSH 仓库（**只读参考，不许改**） | `C:\workspace\Tool\deepseek-harness` |
 | blackboard 参考实现（有 node_modules，可运行） | `C:\workspace\Tool\deepseek-harness\Workspace\dsh-blackboard` |
-| blackboard 固定副本（submodule，无 node_modules） | `<本仓库>/vendor/dsh-blackboard` |
+| blackboard 源码副本（vendored，非 submodule） | `<本仓库>/vendor/dsh-blackboard` |
 
-`vendor/dsh-blackboard` 是 submodule，pin 在固定 commit，**只作为批注层源码来源**：用相对路径 import，例如 `../vendor/dsh-blackboard/core/render.ts`，不修改它、不往里写文件。
+`vendor/dsh-blackboard` 是上游 `ec9052f` 的**源码副本**（普通文件内联，见该目录 `VENDOR.md`），**只作为批注层源码来源**：用相对路径 import，例如 `../vendor/dsh-blackboard/core/render.ts`，不修改它、不往里写文件。
 
 浏览器验证可用 Playwright + 本机 Edge：
 
