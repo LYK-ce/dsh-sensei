@@ -1,0 +1,35 @@
+{
+  // 浏览器半边单独一个 program：host 与 client 两半会用不同的服务合并同一个 cordis Context 键
+  // （sessions 等），一个 program 里放不下两边。
+  //
+  // 客户端各包按 package.json 的 devDependencies 从 node_modules 解析；本目录不打包 CSS，
+  // 所以走的是它们已发布的 lib/types 产物。
+  "compilerOptions": {
+    "target": "es2024",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowImportingTsExtensions": true,
+    "rewriteRelativeImportExtensions": true,
+    "verbatimModuleSyntax": false,
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "noImplicitOverride": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "jsx": "react-jsx",
+    "lib": ["es2024", "dom", "dom.iterable"],
+    // 浏览器面不引 node 的环境类型；React 的类型由 @types/react 提供。
+    "types": [],
+    "noEmit": true
+  },
+  "include": [
+    "core/**/*.ts",
+    "shared/**/*.ts",
+    "client/**/*.ts",
+    "client/**/*.tsx"
+  ]
+}

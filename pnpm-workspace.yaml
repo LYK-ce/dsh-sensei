@@ -1,0 +1,11 @@
+# 本仓库只有一个包。pnpm 11 起这些设置的家在这里（package.json 的 `pnpm` 字段已不再被读取），
+# 而且只有本文件是一个真正的 workspace root（列出 packages）时设置才会被当真。
+packages:
+  - '.'
+
+# pnpm 10+ 会把"带安装脚本的依赖"里未经审阅的脚本判成硬错误（ERR_PNPM_IGNORED_BUILDS）。
+# esbuild 的原生二进制来自 @esbuild/<platform> 这个可选依赖，它的 postinstall 只是一次自检，
+# 本仓库用不到，所以显式拒绝：安装会成功，也不会 spawn 任何子进程。
+# 想跑那次自检就改成 true（需要子进程权限）。
+allowBuilds:
+  esbuild: false

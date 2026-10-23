@@ -6,6 +6,8 @@ lib/*
 !lib/client.js
 *.log
 *.tsbuildinfo
+*.tgz
+coverage/
 .DS_Store
 
 # vendor/dsh-blackboard 是 submodule，由 git 自己管理，不在此处忽略。
