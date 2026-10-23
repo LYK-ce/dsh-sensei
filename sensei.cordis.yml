@@ -1,0 +1,21 @@
+# Sensei 的 overlay：只插一条 host 行。
+#
+# 这份文件同时是 package.json 里的 dsh.bundle.patch 目标：装进 profile 的 bundle
+# 由它挂载，所以它必须留在包目录里、路径相对包目录写。
+#
+# 一条行就够：@deepseek-ai/dsh-client-modules 按**行名**解析出最近的 package.json
+# （这里是同目录的 package.json），读它的 dsh.client 与 exports["./client"]，
+# 再把 lib/client.js 作为动态客户端 bundle serve 出去。所以不需要第二条行。
+#
+# 行名写相对路径：app-boot 的 anchorInsertedPluginNames 会把它锚成本文件所在目录的
+# file:// URL，换机器、换 checkout 位置都不用改。
+#
+# 用法（源码启动的 dsh，host 半边直接跑 .ts）：
+#   pnpm dsh web --patch <本仓库路径>/sensei.cordis.yml
+#
+# 注意 --patch 必须写在应用自己的 flag 之前：dsh 启动器只认自己的 flag，
+# 遇到第一个不认识的 token（比如 --port）就把后面全部原样交给 web 应用，
+# 那时 --patch 会被应用当成未知选项而报错。
+- insert:
+    - id: sensei-host
+      name: './host/index.ts'
